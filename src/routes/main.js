@@ -7,19 +7,7 @@ class MainRoute extends Router {
     }
 
     createRoute() {
-        /*
-
-        ***** Example routes *****
-
-        this.router.get('/', (req, res) => res.render('static/landing'));
-
-        this.router.get('/example', (req, res) => {
-            res.render('static/example', {
-                user: req.user
-            });
-        });
-        
-        */
+        this.router.get('/', (req, res) => res.render('speech/speech'));
 
         // Maintenance routes
         this.router.get('/no-script', (req, res) => res.render('static/noScript'));

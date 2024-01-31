@@ -17,6 +17,9 @@ const { makeConnection } = require('../utilities/mysqlHelper');
 const Router = require('./Router');
 const Logger = require('../utilities/consoleLog');
 
+// WebSocket module
+const socketIO = require('socket.io');
+
 // Setup Config
 require('dotenv').config();
 
@@ -33,7 +36,7 @@ let accessLogStream = rfs.createStream('access.log', {
 
 // Create the app class
 class App {
-    io;
+    io2;
     server;
     constructor() {
         // Create the app and the server
@@ -46,6 +49,19 @@ class App {
         this.app.set('views', path.join(__dirname, '..', 'views'));
         // Setup cors, sessions, cookies, logger, json and urlencoded
         this.app.use(cors());
+
+
+        this.io = socketIO(this.server); // Attach socket.io to the server
+        this.io.on('connection', (socket) => {
+            console.log('Client connected');
+
+            socket.on('audio', async (data) => {
+                // Handle WebSocket audio data
+                // You can integrate this with your existing WebSocket logic
+                console.log('Received audio data:', data);
+            });
+        });
+
 
         const sqlStoreOptions = {
             host: process.env.MYSQL_HOST,
