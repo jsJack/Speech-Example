@@ -1,7 +1,7 @@
 {
-    "name": "web-framework",
-    "version": "1.0.0",
-    "description": "Fullstack web-framework using express, mysql, ejs, and more",
+    "name": "marking-test-site",
+    "version": "0.0.1",
+    "description": "Site to test mic and speech to text for MarkMate redesign",
     "main": "index.js",
     "scripts": {
         "build:docs": "jsdoc src -r -d ./src/docs",
