@@ -11,6 +11,7 @@
     },
     "author": "Jack Perry <hello@jackperry.co>",
     "dependencies": {
+        "@google-cloud/speech": "^6.1.1",
         "body-parser": "^1.20.2",
         "chalk": "^4.1.2",
         "cookie-parser": "^1.4.6",
@@ -27,6 +28,7 @@
         "node-fetch-commonjs": "^3.3.2",
         "nodemon": "^3.0.3",
         "rotating-file-stream": "^3.2.1",
+        "socket.io": "^4.7.4",
         "util": "^0.12.5",
         "uuid": "^9.0.1"
     },
