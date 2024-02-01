@@ -8,11 +8,6 @@ class MainRoute extends Router {
 
     createRoute() {
         this.router.get('/', (req, res) => {
-            // 1. Check user-agent string (consider browser extensions that might modify it)
-            if (!req.headers['user-agent'].includes('Chrome') && !req.headers['user-agent'].includes('Edge')) {
-                return res.redirect('/no-browser');
-            };
-
             // If all checks pass, serve the website content
             res.render('speech/speech');
         });
