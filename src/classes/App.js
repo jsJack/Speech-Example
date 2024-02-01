@@ -55,10 +55,24 @@ class App {
         this.io.on('connection', (socket) => {
             console.log('Client connected');
 
-            socket.on('audio', async (data) => {
-                // Handle WebSocket audio data
-                // You can integrate this with your existing WebSocket logic
-                console.log('Received audio data:', data);
+            // Receive text-result events from the client
+            socket.on('text-result', (transcript) => {
+                console.log('Received transcript:', transcript);
+                // You can potentially process or store the transcript on the server here
+            });
+
+            socket.on('speechData', (data) => {
+                console.log('Received speech data:', data);
+                // You can potentially process or store the speech data on the server here
+            });
+
+            socket.on('consoleLogToServer', (data) => {
+                console.log('Received console log:', data);
+                // You can potentially process or store the console log on the server here
+            });
+
+            socket.on('disconnect', () => {
+                console.log('Client disconnected');
             });
         });
 

@@ -1,7 +1,7 @@
 <html lang="en">
 
 <head>
-    <%- include('../components/header', { title: 'Not found' }) %>
+    <%- include('../components/header', { title: 'No speech' }) %>
         <link rel="stylesheet" href="/public/css/main.css">
         <link rel="stylesheet" href="/public/css/styles.css">
 </head>
@@ -9,9 +9,16 @@
 <body>
     <div id="error">
         <div class="error err-fix">
-            <h1 class="fancy-header-large">404</h1>
-            <p class="text-secondary mb-5">You requested a resource that was not found on this server.
-            <p>
+            <h1 class="fancy-header-large">Error</h1>
+            <p class="text-secondary mb-5">Sorry, your browser does not support Webkit Speech-to-text.</p>
+
+            <div id="lg-buttons">
+                <button class="btn btn-lg btn-primary text-white btn-block w-100 mb-3"
+                    onclick="window.location.href = '/help/1';"><i class="fa-solid fa-question"></i> View
+                    help article</button>
+                <button class="btn btn-lg btn-primary text-white btn-block w-100 mb-3"
+                    onclick="window.location.href = 'https://google.com/chrome';"><i class="fa-brands fa-chrome"></i> Download Google Chrome</button>
+            </div>
 
             <div id="btnToolbar" class="btn-toolbar mt-5 mb-1" style="justify-content: center; display: flex;">
                 <button type="button" id="btnSubmit" class="btn btn-primary btn-md me-2"

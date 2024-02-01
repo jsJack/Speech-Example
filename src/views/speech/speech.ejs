@@ -1,59 +1,88 @@
-<!-- views/index.ejs -->
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Speech-to-Text Demo</title>
+    <%- include('../components/header', { title: 'Not found' }) %>
+        <link rel="stylesheet" href="/public/css/main.css">
+        <link rel="stylesheet" href="/public/css/styles.css">
+        <script src="/socket.io/socket.io.js"></script>
 </head>
 
 <body>
-    <h1>Live Speech-to-Text Demo</h1>
-    <button onclick="startRecording()">Start Recording</button>
-    <button onclick="stopRecording()">Stop Recording</button>
-    <div id="transcription"></div>
+    <div id="error">
+        <div class="error err-fix">
+            <h1 class="fancy-header">Speech Test</h1>
+            <p class="text-secondary mb-2">Your text will show below this message:</p><br>
+            <p id="transcript" class="mb-5"></p>
+            
+            <div id="lg-buttons">
+                <button class="btn btn-lg btn-primary text-white btn-block w-100 mb-3" id="startButton"
+                    onclick="StartSpeechRecognition()"><i class="fa-solid fa-microphone"></i> Start Recording</button>
+                <button class="btn btn-lg btn-danger text-white btn-block w-100 mb-3" style="display: none;" id="stopButton"
+                    onclick="StopSpeechRecognition()"><i class="fa-solid fa-microphone-slash"></i> Stop Recording</button>
+            </div>
 
-    <!-- Include the Web Speech API script -->
-    <script>
-        if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-            // Web Speech API is supported
-            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            <p class="mt-1 text-secondary text-center fs-6">
+                &copy; Jack Perry Software 2024
+            </p>
+        </div>
+    </div>
 
-            recognition.continuous = true;
-            recognition.interimResults = true;
-
-            recognition.onresult = function (event) {
-                console.log(result);
-                const result = event.results[event.results.length - 1];
-                const transcript = result[0].transcript;
-
-                // Update the UI with live transcription
-                document.getElementById('transcription').innerText = transcript;
-            };
-
-            recognition.onend = function () {
-                // Handle end of speech recognition, if needed
-            };
-
-            function startRecording() {
-                recognition.start();
-            }
-
-            function stopRecording() {
-                recognition.stop();
-            }
-        } else {
-            // Web Speech API not supported
-            alert('Web Speech API is not supported in this browser.');
-        }
-    </script>
-
-    <!-- Include the Socket.IO script -->
-    <script src="/socket.io/socket.io.js"></script>
-
-    <!-- Include your main.js script -->
-    <script src="public/js/speechTranslation.js"></script>
+    <%- include('../components/loader') %>
 </body>
+
+<script>
+    const socket = io();
+    const transcriptElement = document.getElementById('transcript');
+    let recognition;
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+
+        recognition.onresult = ProcessSpeechRecognition;
+    } else {
+        console.error("Speech recognition is not supported in this browser.");
+        socket.emit('consoleLogToServer', "Speech recognition is not supported in this browser.")
+        // Consider displaying a message to the user
+    }
+
+    function ProcessSpeechRecognition(event) {
+        console.log(event);
+        socket.emit('speechData', event.results[0][0].transcript);
+
+        const transcript = Array.from(event.results)
+            .map(result => result[0])
+            .map(result => result.transcript)
+            .join('');
+
+        transcriptElement.innerHTML = transcript;
+    };
+
+    function StartSpeechRecognition() {
+        SwitchButtons();
+        recognition.start();
+        console.log("Recognition started");
+        socket.emit('consoleLogToServer', "Recognition started")
+
+    };
+
+    function StopSpeechRecognition() {
+        SwitchButtons();
+        recognition.stop();
+        console.log("Recognition stopped");
+        socket.emit('consoleLogToServer', "Recognition stopped")
+    };
+
+    function SwitchButtons() {
+        // get the startButton and the stopButton and switch their display values
+        const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
+
+        startButton.style.display = startButton.style.display === 'none' ? 'block' : 'none';
+        stopButton.style.display = stopButton.style.display === 'none' ? 'block' : 'none';
+    }
+</script>
 
 </html>
