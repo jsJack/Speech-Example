@@ -1,7 +1,7 @@
 <html lang="en">
 
 <head>
-    <%- include('../components/header', { title: 'Not found' }) %>
+    <%- include('../components/header', { title: 'Speech' }) %>
         <link rel="stylesheet" href="/public/css/main.css">
         <link rel="stylesheet" href="/public/css/styles.css">
         <script src="/socket.io/socket.io.js"></script>
@@ -80,6 +80,9 @@
     };
 
     function StartSpeechRecognition() {
+        const container = document.getElementById('noMicBox');
+        container.style.display = 'none';
+
         SwitchButtons();
         recognition.start();
         console.log("Recognition started");
@@ -89,7 +92,6 @@
         setTimeout(() => {
             if (!hasGotOneEvent) {
                 // get the container and the error div and show them
-                const container = document.getElementById('noMicBox');
                 container.style.display = 'block';
 
                 StopSpeechRecognition();
