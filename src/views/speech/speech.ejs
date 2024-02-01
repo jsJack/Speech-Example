@@ -10,15 +10,32 @@
 <body>
     <div id="error">
         <div class="error err-fix">
-            <h1 class="fancy-header">Speech Test</h1>
+            <h1 class="fancy-header-very-small">Speech Test</h1>
             <p class="text-secondary mb-2">Your text will show below this message:</p><br>
-            <p id="transcript" class="mb-5"></p>
-            
+            <p id="transcript" class="mb-3"></p>
+
+            <div class="container" style="display: none;" id="noMicBox">
+                <div class="row justify-content-center">
+                    <div>
+                        <div class="alert alert-danger rounded-3 text-center p-4">
+                            <h5 class="alert-heading"><i class="fa-solid fa-warning"></i> No microphone detected</h5>
+                            <p>It's been 3
+                                 seconds and we haven't heard you speak.<br>
+                                Please check that your microphone is plugged in and working, and that you have given
+                                permission for this website to use your microphone.<br><br>
+                                Need a better browser? Try <a href="https://google.com/chrome">Google Chrome</a>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="lg-buttons">
                 <button class="btn btn-lg btn-primary text-white btn-block w-100 mb-3" id="startButton"
                     onclick="StartSpeechRecognition()"><i class="fa-solid fa-microphone"></i> Start Recording</button>
-                <button class="btn btn-lg btn-danger text-white btn-block w-100 mb-3" style="display: none;" id="stopButton"
-                    onclick="StopSpeechRecognition()"><i class="fa-solid fa-microphone-slash"></i> Stop Recording</button>
+                <button class="btn btn-lg btn-danger text-white btn-block w-100 mb-3" style="display: none;"
+                    id="stopButton" onclick="StopSpeechRecognition()"><i class="fa-solid fa-microphone-slash"></i> Stop
+                    Recording</button>
             </div>
 
             <p class="mt-1 text-secondary text-center fs-6">
@@ -33,7 +50,7 @@
 <script>
     const socket = io();
     const transcriptElement = document.getElementById('transcript');
-    let recognition;
+    let recognition, hasGotOneEvent = false;
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
@@ -52,6 +69,8 @@
         console.log(event);
         socket.emit('speechData', event.results[0][0].transcript);
 
+        hasGotOneEvent = true;
+
         const transcript = Array.from(event.results)
             .map(result => result[0])
             .map(result => result.transcript)
@@ -64,7 +83,18 @@
         SwitchButtons();
         recognition.start();
         console.log("Recognition started");
-        socket.emit('consoleLogToServer', "Recognition started")
+        socket.emit('consoleLogToServer', "Recognition started");
+
+        // set a timeout to stop the recognition after 5 seconds if hasGotOneEvent is false
+        setTimeout(() => {
+            if (!hasGotOneEvent) {
+                // get the container and the error div and show them
+                const container = document.getElementById('noMicBox');
+                container.style.display = 'block';
+
+                StopSpeechRecognition();
+            }
+        }, 3000);
 
     };
 
